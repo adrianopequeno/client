@@ -1,5 +1,6 @@
 package com.adriano.client.resources.exceptions;
 
+import com.adriano.client.services.exceptions.DatabaseException;
 import com.adriano.client.services.exceptions.ResourceNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
@@ -20,6 +21,19 @@ public class ResourceExceptionHandler {
         err.setTimeStamp(Instant.now());
         err.setStatus(status.value());
         err.setError("Resource not found");
+        err.setMsg(e.getMessage());
+        err.setPath(request.getRequestURI());
+        return ResponseEntity.status(status).body(err);
+    }
+
+    @ExceptionHandler(DatabaseException.class)
+    public ResponseEntity<StandardError> database(DatabaseException e, HttpServletRequest request) {
+        HttpStatus status = HttpStatus.BAD_REQUEST;
+        StandardError err = new StandardError();
+
+        err.setTimeStamp(Instant.now());
+        err.setStatus(status.value());
+        err.setError("Database exception");
         err.setMsg(e.getMessage());
         err.setPath(request.getRequestURI());
         return ResponseEntity.status(status).body(err);

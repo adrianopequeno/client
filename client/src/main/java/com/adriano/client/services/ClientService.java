@@ -3,10 +3,12 @@ package com.adriano.client.services;
 import com.adriano.client.dto.ClientDTO;
 import com.adriano.client.entities.Client;
 import com.adriano.client.repositories.ClientRepository;
+import com.adriano.client.services.exceptions.DatabaseException;
 import com.adriano.client.services.exceptions.ResourceNotFoundException;
 import com.adriano.client.services.helpers.Helper;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -48,6 +50,19 @@ public class ClientService {
             return new ClientDTO(entity);
         } catch (EntityNotFoundException e) {
             throw new ResourceNotFoundException("Id not found " + id);
+        }
+    }
+
+    public void delete(Long id) {
+        if(!clientRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Id not found " + id);
+        }
+
+        try {
+            clientRepository.deleteById(id);
+            clientRepository.flush();
+        } catch (DataIntegrityViolationException e) {
+            throw new DatabaseException("Integrity violation");
         }
     }
 
