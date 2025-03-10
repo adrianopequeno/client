@@ -4,6 +4,7 @@ import com.adriano.client.entities.Client;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.Date;
 
 public class ClientDTO implements Serializable {
     @Serial
@@ -13,16 +14,18 @@ public class ClientDTO implements Serializable {
     private String name;
     private String cpf;
     private Double income;
+    private Date birthDate;
     private Integer children;
 
     public ClientDTO() {
     }
 
-    public ClientDTO(Long id, String name, String cpf, Double income, Integer children) {
+    public ClientDTO(Long id, String name, String cpf, Double income, Date birthDate, Integer children) {
         this.id = id;
         this.name = name;
         this.cpf = cpf;
         this.income = income;
+        this.birthDate = birthDate;
         this.children = children;
     }
 
@@ -31,6 +34,7 @@ public class ClientDTO implements Serializable {
         this.name = entity.getName();
         this.cpf = entity.getCpf();
         this.income = entity.getIncome();
+        this.birthDate = entity.getBirthDate();;
         this.children = entity.getChildren();
     }
 
@@ -64,6 +68,14 @@ public class ClientDTO implements Serializable {
 
     public void setIncome(Double income) {
         this.income = income;
+    }
+
+    public Date getBirthDate() {
+        return birthDate;
+    }
+
+    public void setBirthDate(Date birthDate) {
+        this.birthDate = birthDate;
     }
 
     public Integer getChildren() {

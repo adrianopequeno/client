@@ -3,13 +3,15 @@ package com.adriano.client.resources;
 import com.adriano.client.dto.ClientDTO;
 import com.adriano.client.dto.ClientPageTDO;
 import com.adriano.client.services.ClientService;
-import jakarta.websocket.server.PathParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import java.net.URI;
 
 @RestController
 @RequestMapping(value="/clients")
@@ -34,5 +36,13 @@ public class ClientResource {
     public ResponseEntity<ClientDTO> findById(@PathVariable Long id){
         ClientDTO dto = clientService.findById(id);
         return ResponseEntity.ok().body(dto);
+    }
+
+    @PostMapping
+    public ResponseEntity<ClientDTO> insert(@RequestBody ClientDTO dto){
+        dto = clientService.insert(dto);
+        URI  uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
+                .buildAndExpand(dto.getId()).toUri();
+        return ResponseEntity.created(uri).body(dto);
     }
 }

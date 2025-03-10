@@ -4,6 +4,7 @@ import com.adriano.client.dto.ClientDTO;
 import com.adriano.client.entities.Client;
 import com.adriano.client.repositories.ClientRepository;
 import com.adriano.client.services.exceptions.ResourceNotFoundException;
+import com.adriano.client.services.helpers.Helper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -30,4 +31,12 @@ public class ClientService {
         Client client = optional.orElseThrow(() -> new ResourceNotFoundException("Entity not found"));
         return new ClientDTO(client);
     }
+
+    @Transactional
+    public ClientDTO insert(ClientDTO dto) {
+        Client entity = new Client();
+        entity = clientRepository.save(Helper.copyDtoToEntity(dto, entity));
+        return new ClientDTO(entity);
+    }
+
 }
