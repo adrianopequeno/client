@@ -5,6 +5,7 @@ import com.adriano.client.entities.Client;
 import com.adriano.client.repositories.ClientRepository;
 import com.adriano.client.services.exceptions.ResourceNotFoundException;
 import com.adriano.client.services.helpers.Helper;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -37,6 +38,17 @@ public class ClientService {
         Client entity = new Client();
         entity = clientRepository.save(Helper.copyDtoToEntity(dto, entity));
         return new ClientDTO(entity);
+    }
+
+    @Transactional
+    public ClientDTO update(Long id, ClientDTO dto) {
+        try {
+            Client entity = clientRepository.getReferenceById(id);
+            entity = clientRepository.save(Helper.copyDtoToEntity(dto, entity));
+            return new ClientDTO(entity);
+        } catch (EntityNotFoundException e) {
+            throw new ResourceNotFoundException("Id not found " + id);
+        }
     }
 
 }
